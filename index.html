@@ -1,126 +1,611 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Cricket Game</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CricArcade - Premium Cricket Mini-Games Hub</title>
   <link rel="stylesheet" href="cricket.css">
 </head>
 <body>
-  <h1>Bat Ball Stump Game</h1>
 
-  <button class="choice-button" onclick="
-  let computerChoice = generateComputerChoice();
-  let resultMsg = getResult('Bat', computerChoice);
-  showResult('Bat', computerChoice, resultMsg);
-  ">
-    <img src="images/bat.png" alt="Bat Image" class="choice-image">  
-  </button>
+  <!-- SVG Symbols for Game Icons -->
+  <svg style="display: none;">
+    <!-- Icon 1: Flagship BBS -->
+    <g id="icon-bbs">
+      <path d="M4 18h2v4H4zm6-6h2v10h-2zm6-6h2v16h-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M12 2L2 9l3 8h14l3-8z" opacity="0.15"/>
+      <circle cx="12" cy="7" r="2" fill="currentColor"/>
+    </g>
+    <!-- Icon 2: Toss Coin -->
+    <g id="icon-toss">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="12" cy="12" r="6" opacity="0.2"/>
+      <path d="M9 12h6M12 9v6" stroke="currentColor" stroke-width="2"/>
+    </g>
+    <!-- Icon 3: Quiz -->
+    <g id="icon-quiz">
+      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <!-- Icon 4: Catch Ball -->
+    <g id="icon-catch">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M12 3a9 9 0 0 0 0 18M12 3a9 9 0 0 1 0 18" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/>
+      <path d="M5 8c2 2 2 6 0 8M19 8c-2 2-2 6 0 8" stroke="currentColor" stroke-width="1.5"/>
+    </g>
+    <!-- Icon 5: Memory Match -->
+    <g id="icon-memory">
+      <rect x="3" y="3" width="7" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>
+      <rect x="14" y="3" width="7" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>
+      <rect x="3" y="14" width="7" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>
+      <rect x="14" y="14" width="7" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>
+    </g>
+    <!-- Icon 6: Tic-Tac-Toe -->
+    <g id="icon-ttt">
+      <path d="M3 9h18M3 15h18M9 3v18M15 3v18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    <!-- Icon 7: Guess Score -->
+    <g id="icon-guess">
+      <rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M7 10h10M7 14h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    <!-- Icon 8: Catch Catches -->
+    <g id="icon-whack">
+      <path d="M12 2a10 10 0 0 0-10 10c0 5.52 4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z" fill="currentColor"/>
+    </g>
+  </svg>
 
-  <button class="choice-button" onclick="
-    computerChoice = generateComputerChoice();
-    resultMsg = getResult('Ball', computerChoice);
-    showResult('Ball', computerChoice, resultMsg);
-  ">
-    <img src="images/ball.png" alt="Ball Image" class="choice-image">  
-  </button>
-
-  <button class="choice-button" onclick="
-    computerChoice = generateComputerChoice();
-    resultMsg = getResult('Stump', computerChoice);
-    showResult('Stump', computerChoice, resultMsg);
-  ">
-    <img src="images/stump.png" alt="Stump Image" class="choice-image">
-  </button>
-
-  <h3 id="user-move"></h3>
-  <h3 id="computer-move"></h3>
-  <h3 id="result"></h3>
-  <h3 id="score"></h3>
-
-  <button onclick="localStorage.clear()
-      resetScore();
-  ">Reset</button>
-
-  <script>
-    let scoreStr = localStorage.getItem('Score');
-    let score;
-    resetScore(scoreStr);
-
-    function resetScore(scoreStr) {
-      score = scoreStr ? JSON.parse(scoreStr) : {
-        win: 0,
-        lost: 0,
-        tie: 0,
-      };
-
-      score.displayScore = function() {
-        return `Score:Won:${score.win}, Lost:${score.lost}, Tie: ${score.tie}`;
-      };
-
-      showResult();
-    }
-
-    function generateComputerChoice() {
-      //This will generate random number between 0 and 3
-      let randomNumber = Math.random() * 3;
-      if (randomNumber > 0 && randomNumber <= 1) {
-        return 'Bat';
-      } else if (randomNumber > 1 && randomNumber <= 2) {
-        return 'Ball';
-      } else {
-        return 'Stump'
-      }
-    }
-
-    function getResult(userMove, computerMove) {
-      if (userMove === 'Bat') {
-        if (computerMove === 'Ball') {
-          score.win++;
-          return 'User won.';
-        } else if (computerMove === 'Bat') {
-          score.tie++;
-          return `It's a tie`;
-        } else if (computerMove === 'Stump') {
-          score.lost++;
-          return 'Computer has won';
-        }
-      } else if (userMove === 'Ball') {
-        if (computerMove === 'Ball') {
-          score.tie++;
-          return `It's a tie`;
-        } else if (computerMove === 'Bat') {
-          score.lost++;
-          return 'Computer has won';
-        } else if (computerMove === 'Stump') {
-          score.win++;
-          return 'User won.';
-        }
-      } else {
-        if (computerMove === 'Ball') {
-          score.lost++;
-          return 'Computer has won';
-        } else if (computerMove === 'Bat') {
-          score.win++;
-          return 'User won.';
-        } else if (computerMove === 'Stump') {
-          score.tie++;
-          return `It's a tie`;
-        }
-      }
-    }
-
-    function showResult(userMove, computerMove, result) {
-      localStorage.setItem('Score', JSON.stringify(score));
+  <div class="arcade-container">
+    
+    <!-- Global Header -->
+    <header class="arcade-header">
+      <div class="brand-section">
+        <div class="brand-logo">Cric<span>Arcade</span></div>
+      </div>
       
-      document.querySelector('#user-move').innerText = 
-        userMove ? `You have chosen ${userMove}` : '';
-      
-      document.querySelector('#computer-move').innerText =
-        computerMove ? `Computer choice is ${computerMove}` : '';
-      
-      document.querySelector('#result').innerText = result || '';
+      <div class="career-stats">
+        <div class="stat-item">
+          <span class="stat-label">Level</span>
+          <span class="stat-value" id="global-level">1</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Career Runs</span>
+          <span class="stat-value" id="global-runs">00</span>
+        </div>
+        <div class="header-controls">
+          <button class="btn-control" title="Quick Tour" onclick="arcade.startTour()" style="font-weight: bold;">ℹ️</button>
+          <button class="btn-control btn-mute" title="Toggle Sound">🔊</button>
+        </div>
+      </div>
+    </header>
 
-      document.querySelector('#score').innerText = score.displayScore();
-    }
-  </script>
+    <!-- ------------------ DASHBOARD VIEW ------------------ -->
+    <div id="dashboard-container" class="dashboard-view">
+      <div class="hero-banner">
+        <h1 class="hero-title">CRICKET ARCADE</h1>
+        <p class="hero-subtitle">Step onto the pitch, face the bowling, and score runs across 8 polished sports mini-games. Earn career runs to level up your profile!</p>
+      </div>
+
+      <div class="games-grid">
+        <!-- Game 1: Bat Ball Stump -->
+        <div class="game-card" onclick="arcade.switchScreen('bat-ball-stump')">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg><use href="#icon-bbs"></use></svg>
+            </div>
+            <span class="difficulty-badge" style="color: var(--primary-green);">Flagship</span>
+          </div>
+          <div class="card-body">
+            <h3>Bat Ball Stump</h3>
+            <p>The classic choice game. Go head-to-head against the computer bowler in a strategic duel. Can you top the scoreboard?</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-highscore">Best: <span id="score-bbs">0 wins</span></span>
+            <button class="btn-play-card">Play</button>
+          </div>
+        </div>
+
+        <!-- Game 2: Toss Simulator -->
+        <div class="game-card" onclick="arcade.switchScreen('toss-simulator')">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg><use href="#icon-toss"></use></svg>
+            </div>
+            <span class="difficulty-badge">Easy</span>
+          </div>
+          <div class="card-body">
+            <h3>Toss Simulator</h3>
+            <p>Flip the gold coin in 3D perspective, call Heads or Tails, and choose whether to bat or bowl first in front of a roaring crowd.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-highscore">Best: <span id="score-toss">0 wins</span></span>
+            <button class="btn-play-card">Play</button>
+          </div>
+        </div>
+
+        <!-- Game 3: Cricket Quiz -->
+        <div class="game-card" onclick="arcade.switchScreen('cricket-quiz')">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg><use href="#icon-quiz"></use></svg>
+            </div>
+            <span class="difficulty-badge" style="color: var(--gold-trophy);">Medium</span>
+          </div>
+          <div class="card-body">
+            <h3>Cricket Quiz</h3>
+            <p>Timed trivia with a ticking clock! Answer 10 randomized trivia questions about legends, records, rules, and world cups.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-highscore">Best: <span id="score-quiz">0/10</span></span>
+            <button class="btn-play-card">Play</button>
+          </div>
+        </div>
+
+        <!-- Game 4: Catch the Ball -->
+        <div class="game-card" onclick="arcade.switchScreen('catch-ball')">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg><use href="#icon-catch"></use></svg>
+            </div>
+            <span class="difficulty-badge" style="color: var(--leather-red);">Hard</span>
+          </div>
+          <div class="card-body">
+            <h3>Catch the Ball</h3>
+            <p>Test your reflexes! Tap the shrinking cricket ball before it flies past you. Miss three catches and the innings is over.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-highscore">Best: <span id="score-catch">0 runs</span></span>
+            <button class="btn-play-card">Play</button>
+          </div>
+        </div>
+
+        <!-- Game 5: Memory Match -->
+        <div class="game-card" onclick="arcade.switchScreen('memory-match')">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg><use href="#icon-memory"></use></svg>
+            </div>
+            <span class="difficulty-badge">Medium</span>
+          </div>
+          <div class="card-body">
+            <h3>Memory Match</h3>
+            <p>Match cards featuring elegant vector icons of cricket gears. Solve the matching grid in the fastest time possible.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-highscore">Best: <span id="score-memory">None</span></span>
+            <button class="btn-play-card">Play</button>
+          </div>
+        </div>
+
+        <!-- Game 6: Tic-Tac-Toe -->
+        <div class="game-card" onclick="arcade.switchScreen('tic-tac-toe')">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg><use href="#icon-ttt"></use></svg>
+            </div>
+            <span class="difficulty-badge">Medium</span>
+          </div>
+          <div class="card-body">
+            <h3>Cricket Tic-Tac-Toe</h3>
+            <p>Play Bat vs Ball in a modern turf grid. Face off against a smart AI bowler that blocks wins and takes tactical spots.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-highscore">Best: <span id="score-ttt">0 wins</span></span>
+            <button class="btn-play-card">Play</button>
+          </div>
+        </div>
+
+        <!-- Game 7: Guess the Score -->
+        <div class="game-card" onclick="arcade.switchScreen('guess-score')">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg><use href="#icon-guess"></use></svg>
+            </div>
+            <span class="difficulty-badge">Easy</span>
+          </div>
+          <div class="card-body">
+            <h3>Guess the Score</h3>
+            <p>Chase down a target score in a 6-ball over. Use digital scoreboard comments to guess if the score is higher or lower.</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-highscore">Best: <span id="score-guess">0 wins</span></span>
+            <button class="btn-play-card">Play</button>
+          </div>
+        </div>
+
+        <!-- Game 8: Catch the Catches -->
+        <div class="game-card" onclick="arcade.switchScreen('catch-catches')">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg><use href="#icon-whack"></use></svg>
+            </div>
+            <span class="difficulty-badge" style="color: var(--leather-red);">Hard</span>
+          </div>
+          <div class="card-body">
+            <h3>Catch the Catches</h3>
+            <p>A Whack-a-Mole fielding drill. Catches pop up at 6 field spots. Catch balls and stumps, but avoid spectator hazards!</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-highscore">Best: <span id="score-whack">0 catches</span></span>
+            <button class="btn-play-card">Play</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------ 1. FLAGSHIP GAME VIEW ------------------ -->
+    <div id="bat-ball-stump-view" class="game-view">
+      <button class="btn-back" onclick="arcade.switchScreen('dashboard')">← Back to Hub</button>
+      <div class="game-layout">
+        <div class="game-header">
+          <h2>Bat Ball Stump</h2>
+          <p class="game-description">Predict the computer bowler's move. Bat beats Ball, Ball beats Stump, Stump beats Bat!</p>
+        </div>
+
+        <div class="bbs-game-panel">
+          <div class="choice-buttons-container">
+            <button class="bbs-choice-btn" onclick="window.batBallStumpGame.playMove('Bat')">
+              <img src="images/bat.png" alt="Bat">
+              <span>Bat</span>
+            </button>
+            <button class="bbs-choice-btn" onclick="window.batBallStumpGame.playMove('Ball')">
+              <img src="images/ball.png" alt="Ball">
+              <span>Ball</span>
+            </button>
+            <button class="bbs-choice-btn" onclick="window.batBallStumpGame.playMove('Stump')">
+              <img src="images/stump.png" alt="Stump">
+              <span>Stump</span>
+            </button>
+          </div>
+
+          <div class="match-arena">
+            <div class="player-panel">
+              <span class="stat-label">You Chose</span>
+              <div class="move-circle" id="bbs-user-move-icon">❓</div>
+            </div>
+            <div class="versus-divider">VS</div>
+            <div class="computer-panel">
+              <span class="stat-label">Bowler Chose</span>
+              <div class="move-circle" id="bbs-comp-move-icon">❓</div>
+            </div>
+          </div>
+
+          <div class="result-overlay-box">
+            <h3 id="bbs-result-msg" class="result-msg">Make your choice!</h3>
+          </div>
+
+          <div class="score-display-board">
+            <div class="score-counter-item">
+              <span class="stat-label" style="color: var(--primary-green);">Wins</span>
+              <span class="score-counter-val" id="bbs-win-val">0</span>
+            </div>
+            <div class="score-counter-item" style="border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); padding: 0 20px;">
+              <span class="stat-label" style="color: var(--leather-red);">Losses</span>
+              <span class="score-counter-val" id="bbs-lost-val">0</span>
+            </div>
+            <div class="score-counter-item">
+              <span class="stat-label" style="color: var(--stadium-blue);">Ties</span>
+              <span class="score-counter-val" id="bbs-tie-val">0</span>
+            </div>
+          </div>
+
+          <button class="btn-primary" style="background: rgba(255, 51, 75, 0.1); color: var(--leather-red); border: 1px solid rgba(255,51,75,0.3); padding: 8px 20px; font-size: 0.8rem;" onclick="window.batBallStumpGame.resetScoreBoard()">Reset Scores</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------ 2. TOSS SIMULATOR VIEW ------------------ -->
+    <div id="toss-simulator-view" class="game-view">
+      <button class="btn-back" onclick="arcade.switchScreen('dashboard')">← Back to Hub</button>
+      <div class="game-layout">
+        <div class="game-header">
+          <h2>Toss Simulator</h2>
+          <p class="game-description" id="toss-wins-display">Tosses Won: 0</p>
+        </div>
+
+        <div class="toss-arena">
+          <div class="coin-container">
+            <div class="coin" id="toss-coin">
+              <div class="coin-face coin-heads">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16" font-size="12" font-weight="bold" text-anchor="middle" fill="currentColor">H</text></svg>
+                <span class="coin-label">Heads</span>
+              </div>
+              <div class="coin-face coin-tails">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16" font-size="12" font-weight="bold" text-anchor="middle" fill="currentColor">T</text></svg>
+                <span class="coin-label">Tails</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="toss-choice-section" id="toss-choice-section">
+            <div class="toss-choice-buttons">
+              <button class="toss-choice-btn selected" id="btn-call-heads" onclick="window.tossSimulatorGame.selectChoice('heads')">Call Heads</button>
+              <button class="toss-choice-btn" id="btn-call-tails" onclick="window.tossSimulatorGame.selectChoice('tails')">Call Tails</button>
+            </div>
+            <button class="btn-primary" id="btn-flip" onclick="window.tossSimulatorGame.flipCoin()">Flip Coin</button>
+          </div>
+
+          <div class="toss-decision-section" id="toss-decision-section">
+            <h3 id="toss-decision-title" style="margin-bottom: 15px; text-align: center;">You won the toss!</h3>
+            <div id="toss-decision-options" style="display: flex; gap: 15px;">
+              <!-- JS Injected Buttons -->
+            </div>
+          </div>
+
+          <h3 id="toss-result-text" class="result-msg">Heads or Tails? Call your choice!</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------ 3. CRICKET QUIZ VIEW ------------------ -->
+    <div id="cricket-quiz-view" class="game-view">
+      <button class="btn-back" onclick="arcade.switchScreen('dashboard')">← Back to Hub</button>
+      <div class="game-layout">
+        <div class="game-header">
+          <h2>Cricket Quiz</h2>
+          <p class="game-description" id="quiz-question-number">Question 1 of 10</p>
+        </div>
+
+        <div class="quiz-container">
+          <div id="quiz-game-box">
+            <div class="quiz-progress-bar-container">
+              <div class="quiz-progress-bar" id="quiz-progress"></div>
+            </div>
+
+            <div class="quiz-timer-container" style="margin: 15px 0;">
+              <span class="quiz-timer-label">Time Remaining</span>
+              <div class="quiz-timer-bar-outer">
+                <div class="quiz-timer-bar" id="quiz-timer-bar"></div>
+              </div>
+              <span class="quiz-timer-numeric" id="quiz-timer-numeric">10s</span>
+            </div>
+
+            <div class="quiz-question-box" style="margin-bottom: 20px;">
+              <p class="quiz-question-text" id="quiz-question-text">Loading question...</p>
+            </div>
+
+            <div class="quiz-options-list" id="quiz-options-list">
+              <!-- JS Injected Buttons -->
+            </div>
+          </div>
+
+          <div class="quiz-summary-screen" id="quiz-summary-screen">
+            <span class="quiz-trophy">🏆</span>
+            <h3 style="font-size: 2rem; color: var(--primary-green);">Innings Closed!</h3>
+            <p style="font-size: 1.1rem;">Your Score: <strong id="quiz-score-fraction" style="color:#fff;">0/10</strong></p>
+            <p>Trivia Badge: <strong id="quiz-badge" style="color:var(--stadium-blue);">Casual Fan</strong></p>
+            <div id="quiz-stars" style="color: var(--gold-trophy); font-size: 1.5rem; letter-spacing: 2px;">★★★★</div>
+            <p>Career Runs Awarded: <strong id="quiz-runs-earned" style="color: var(--primary-green);">+0</strong></p>
+            <button class="btn-primary" onclick="window.cricketQuizGame.init()" style="margin-top: 10px;">Retry Quiz</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------ 4. CATCH THE BALL VIEW ------------------ -->
+    <div id="catch-ball-view" class="game-view">
+      <button class="btn-back" onclick="arcade.switchScreen('dashboard')">← Back to Hub</button>
+      <div class="game-layout">
+        <div class="game-header">
+          <h2>Catch the Ball</h2>
+          <p class="game-description">Reflex training. Don't let the ball escape!</p>
+        </div>
+
+        <div class="catch-game-layout">
+          <div class="catch-scoreboard">
+            <div class="score-counter-item">
+              <span class="stat-label">Runs</span>
+              <span class="score-counter-val" id="catch-score-val" style="color: var(--primary-green);">0</span>
+            </div>
+            <div class="score-counter-item">
+              <span class="stat-label">Timer</span>
+              <span class="score-counter-val" id="catch-time-val" style="color: var(--stadium-blue);">30s</span>
+            </div>
+            <div class="score-counter-item">
+              <span class="stat-label">Wickets</span>
+              <span class="score-counter-val" id="catch-wickets-val" style="color: var(--leather-red); font-family: var(--font-main); letter-spacing: 1px;">🏏🏏🏏</span>
+            </div>
+          </div>
+
+          <div class="catch-field" id="catch-field">
+            <div class="catch-instructions" id="catch-start-screen">
+              <p style="text-align: center; max-width: 400px; color: var(--text-muted);">A cricket ball will pop up in random spots. Click/tap it as fast as you can. It shrinks quickly! Misses lose wickets.</p>
+              <button class="btn-primary" onclick="window.catchBallGame.startGame()">Start Fielding</button>
+            </div>
+            <div class="target-ball" id="catch-ball-target" onclick="window.catchBallGame.catchBall(event)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------ 5. MEMORY MATCH VIEW ------------------ -->
+    <div id="memory-match-view" class="game-view">
+      <button class="btn-back" onclick="arcade.switchScreen('dashboard')">← Back to Hub</button>
+      <div class="game-layout">
+        <div class="game-header">
+          <h2>Memory Match</h2>
+          <p class="game-description">Match the pairs of cricket gear in the fewest moves!</p>
+        </div>
+
+        <div style="display:flex; justify-content:center; gap:30px; margin-bottom:20px;">
+          <div class="score-counter-item">
+            <span class="stat-label">Moves</span>
+            <span class="score-counter-val" id="memory-moves-val" style="color:var(--primary-green);">0</span>
+          </div>
+          <div class="score-counter-item">
+            <span class="stat-label">Timer</span>
+            <span class="score-counter-val" id="memory-time-val" style="color:var(--stadium-blue);">0s</span>
+          </div>
+        </div>
+
+        <div class="memory-grid" id="memory-grid">
+          <!-- JS Injected Cards -->
+        </div>
+
+        <div class="memory-summary-screen" id="memory-summary-screen">
+          <span class="quiz-trophy">🧠</span>
+          <h3 style="font-size: 2rem; color: var(--primary-green);">Board Cleared!</h3>
+          <p style="font-size: 1.1rem;">Time Taken: <strong id="memory-score-time" style="color:#fff;">0s</strong></p>
+          <p>Moves Made: <strong id="memory-score-moves" style="color:var(--stadium-blue);">0</strong></p>
+          <p>Career Runs Awarded: <strong id="memory-runs-earned" style="color: var(--primary-green);">+0</strong></p>
+          <button class="btn-primary" onclick="window.memoryMatchGame.init()" style="margin-top: 10px;">Play Again</button>
+          <button class="btn-primary" style="background:var(--glass-bg); color:#fff; border:1px solid var(--glass-border); margin-top: 10px;" onclick="window.arcade.switchScreen('dashboard')">Back to Hub</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------ 6. TIC TAC TOE VIEW ------------------ -->
+    <div id="tic-tac-toe-view" class="game-view">
+      <button class="btn-back" onclick="arcade.switchScreen('dashboard')">← Back to Hub</button>
+      <div class="game-layout">
+        <div class="game-header">
+          <h2>Cricket Tic Tac Toe</h2>
+          <p class="game-description" id="ttt-wins-display">Wins: 0</p>
+        </div>
+
+        <div class="ttt-container">
+          <div class="ttt-status" id="ttt-status-text">Your Turn (Bat 🏏)</div>
+          <div class="ttt-board">
+            <div class="ttt-cell" data-index="0" onclick="window.ticTacToeGame.makeMove(this, 0)"></div>
+            <div class="ttt-cell" data-index="1" onclick="window.ticTacToeGame.makeMove(this, 1)"></div>
+            <div class="ttt-cell" data-index="2" onclick="window.ticTacToeGame.makeMove(this, 2)"></div>
+            <div class="ttt-cell" data-index="3" onclick="window.ticTacToeGame.makeMove(this, 3)"></div>
+            <div class="ttt-cell" data-index="4" onclick="window.ticTacToeGame.makeMove(this, 4)"></div>
+            <div class="ttt-cell" data-index="5" onclick="window.ticTacToeGame.makeMove(this, 5)"></div>
+            <div class="ttt-cell" data-index="6" onclick="window.ticTacToeGame.makeMove(this, 6)"></div>
+            <div class="ttt-cell" data-index="7" onclick="window.ticTacToeGame.makeMove(this, 7)"></div>
+            <div class="ttt-cell" data-index="8" onclick="window.ticTacToeGame.makeMove(this, 8)"></div>
+          </div>
+          <button class="btn-primary" onclick="window.ticTacToeGame.init()">Reset Board</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------ 7. GUESS THE SCORE VIEW ------------------ -->
+    <div id="guess-score-view" class="game-view">
+      <button class="btn-back" onclick="arcade.switchScreen('dashboard')">← Back to Hub</button>
+      <div class="game-layout">
+        <div class="game-header">
+          <h2>Guess the Score</h2>
+          <p class="game-description" id="guess-wins-display">Matches Won: 0</p>
+        </div>
+
+        <div class="guess-layout">
+          <div class="guess-scoreboard">
+            <div class="guess-scoreboard-top">
+              <div>
+                <span class="stat-label">Target Score</span>
+                <div class="guess-runs" id="guess-target-display">???</div>
+              </div>
+              <div style="text-align: right;">
+                <span class="stat-label">Over Status</span>
+                <div class="guess-overs" id="guess-overs-display">Overs: 0.0</div>
+              </div>
+            </div>
+            <div class="guess-balls-container" id="guess-balls-container">
+              <!-- JS Injected 6 ball dots -->
+            </div>
+          </div>
+
+          <div class="guess-input-container">
+            <input type="number" class="guess-input" id="guess-input-field" placeholder="Enter target runs (100-300)" min="100" max="300" onkeydown="if(event.key==='Enter') window.guessScoreGame.submitGuess()">
+            <button class="btn-primary" id="guess-submit-btn" style="border-radius: 20px; padding: 12px 25px;" onclick="window.guessScoreGame.submitGuess()">Guess</button>
+          </div>
+
+          <div class="guess-feedback" id="guess-feedback-text">
+            Chase the target! Guess a score between 100 and 300.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------ 8. CATCH THE CATCHES VIEW ------------------ -->
+    <div id="catch-catches-view" class="game-view">
+      <button class="btn-back" onclick="arcade.switchScreen('dashboard')">← Back to Hub</button>
+      <div class="game-layout">
+        <div class="game-header">
+          <h2>Catch the Catches</h2>
+          <p class="game-description" id="whack-highscore-display">Record Catches: 0</p>
+        </div>
+
+        <div class="catch-game-layout">
+          <div class="catch-scoreboard">
+            <div class="score-counter-item">
+              <span class="stat-label">Catches Taken</span>
+              <span class="score-counter-val" id="whack-score-val" style="color:var(--primary-green)">0</span>
+            </div>
+            <div class="score-counter-item">
+              <span class="stat-label">Time Left</span>
+              <span class="score-counter-val" id="whack-time-val" style="color:var(--stadium-blue)">30s</span>
+            </div>
+          </div>
+
+          <div class="catch-field" style="max-width: 550px; padding: 20px; display:flex; flex-direction:column; justify-content:center; position:relative;">
+            <div class="catch-instructions" id="whack-start-screen">
+              <p style="text-align: center; max-width: 400px; color: var(--text-muted); padding: 0 15px;">catches and runs out pop up from the grass holes. Click them fast! Avoid spectators/bombs 💣 which cause overthrows.</p>
+              <button class="btn-primary" onclick="window.catchCatchesGame.startGame()">Start Drill</button>
+            </div>
+            
+            <div class="catches-grid">
+              <div class="field-spot" data-index="0" onclick="window.catchCatchesGame.handleWhack(this)">
+                <div class="fielder-target"></div>
+              </div>
+              <div class="field-spot" data-index="1" onclick="window.catchCatchesGame.handleWhack(this)">
+                <div class="fielder-target"></div>
+              </div>
+              <div class="field-spot" data-index="2" onclick="window.catchCatchesGame.handleWhack(this)">
+                <div class="fielder-target"></div>
+              </div>
+              <div class="field-spot" data-index="3" onclick="window.catchCatchesGame.handleWhack(this)">
+                <div class="fielder-target"></div>
+              </div>
+              <div class="field-spot" data-index="4" onclick="window.catchCatchesGame.handleWhack(this)">
+                <div class="fielder-target"></div>
+              </div>
+              <div class="field-spot" data-index="5" onclick="window.catchCatchesGame.handleWhack(this)">
+                <div class="fielder-target"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 10-Second Quick Tour Overlay -->
+  <div id="tour-overlay" class="tour-overlay" style="display: none;">
+    <div class="tour-modal">
+      <div class="tour-progress-bar-container">
+        <div id="tour-progress" class="tour-progress-bar"></div>
+      </div>
+      <div class="tour-header">
+        <h3>CricArcade Training Day</h3>
+        <span id="tour-timer-label">10s</span>
+      </div>
+      <div class="tour-body" id="tour-body-content">
+        <!-- JS Injected Tour Slides -->
+      </div>
+      <div class="tour-footer">
+        <button class="toss-choice-btn" style="padding: 6px 15px; font-size: 0.8rem;" id="btn-tour-prev" onclick="arcade.prevTourSlide()">Back</button>
+        <button class="btn-primary" style="padding: 8px 20px; font-size: 0.85rem;" id="btn-tour-next" onclick="arcade.nextTourSlide()">Next</button>
+        <button class="toss-choice-btn" style="padding: 6px 15px; font-size: 0.8rem; border-color: rgba(255,255,255,0.15);" onclick="arcade.closeTour()">Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Central Arcade Scripts -->
+  <script src="arcade.js"></script>
+  
+  <!-- Individual Mini-Game Scripts -->
+  <script src="games/bat_ball_stump.js"></script>
+  <script src="games/toss_simulator.js"></script>
+  <script src="games/cricket_quiz.js"></script>
+  <script src="games/catch_ball.js"></script>
+  <script src="games/memory_match.js"></script>
+  <script src="games/tic_tac_toe.js"></script>
+  <script src="games/guess_score.js"></script>
+  <script src="games/catch_catches.js"></script>
+
 </body>
 </html>
